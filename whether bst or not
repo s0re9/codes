@@ -1,0 +1,40 @@
+#include #include
+
+struct Node { int data; Node* left; Node* right;
+
+Node(int value) : data(value), left(nullptr), right(nullptr) {}
+};
+
+bool isBSTUtil(Node* node, int minValue, int maxValue) { if (node == nullptr) { return true; }
+
+// Check if the current node's value is within the valid range
+if (node->data < minValue || node->data > maxValue) {
+    return false;
+}
+
+// Recursively check the left and right subtrees with updated range
+return isBSTUtil(node->left, minValue, node->data - 1) &&
+       isBSTUtil(node->right, node->data + 1, maxValue);
+}
+
+bool isBST(Node* root) { // Use INT_MIN and INT_MAX as initial range for the root return isBSTUtil(root, INT_MIN, INT_MAX); }
+
+int main() { // Example usage Node* root = new Node(10); root->left = new Node(5); root->right = new Node(15); root->left->left = new Node(2); root->left->right = new Node(7); root->right->left = new Node(12);
+
+if (isBST(root)) {
+    std::cout << "The binary tree is a BST." << std::endl;
+} else {
+    std::cout << "The binary tree is not a BST." << std::endl;
+}
+
+// Don't forget to free the allocated memory
+// (in a real program, you would have proper memory management)
+delete root->left->left;
+delete root->left->right;
+delete root->right->left;
+delete root->left;
+delete root->right;
+delete root;
+
+return 0;
+}
