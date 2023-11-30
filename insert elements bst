@@ -1,0 +1,72 @@
+#include <iostream>
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) : data(value), left(nullptr), right(nullptr) {}
+};
+
+class BST {
+private:
+    Node* root;
+
+    Node* insertUtil(Node* node, int value) {
+        if (node == nullptr) {
+            return new Node(value);
+        }
+
+        if (value < node->data) {
+            node->left = insertUtil(node->left, value);
+        } else if (value > node->data) {
+            node->right = insertUtil(node->right, value);
+        }
+
+        return node;
+    }
+
+public:
+    BST() : root(nullptr) {}
+
+    void insert(int value) {
+        root = insertUtil(root, value);
+    }
+
+    // Other BST operations can be added here
+
+    // Destructor to free memory
+    ~BST() {
+        deleteTree(root);
+    }
+
+private:
+    void deleteTree(Node* node) {
+        if (node == nullptr) {
+            return;
+        }
+
+        deleteTree(node->left);
+        deleteTree(node->right);
+        delete node;
+    }
+};
+
+int main() {
+    // Example usage
+    BST bst;
+
+    // Insert elements into the BST
+    bst.insert(10);
+    bst.insert(5);
+    bst.insert(15);
+    bst.insert(2);
+    bst.insert(7);
+    bst.insert(12);
+
+    // The BST now contains: 2, 5, 7, 10, 12, 15
+
+    // Don't need to manually free memory, as the BST's destructor will handle it
+
+    return 0;
+}
