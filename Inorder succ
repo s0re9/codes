@@ -1,0 +1,59 @@
+#include <iostream>
+
+using namespace std;
+
+struct Node {
+    int val;
+    Node *left, *right;
+
+    Node(int val) {
+        this->val = val;
+        this->left = this->right = nullptr;
+    }
+};
+
+Node *findInorderSuccessor(Node *root, int key) {
+    if (!root) {
+        return nullptr;
+    }
+
+    if (root->val == key) {
+        // If the node has a right child, the inorder successor is the minimum node in the right subtree
+        if (root->right) {
+            Node *curr = root->right;
+            while (curr->left) {
+                curr = curr->left;
+            }
+            return curr;
+        }
+    } else if (root->val < key) {
+        // If the key is greater than the current node, the inorder successor must lie in the right subtree
+        return findInorderSuccessor(root->right, key);
+    } else {
+        // If the key is less than or equal to the current node, the inorder successor must lie in the left subtree
+        // or is the current node itself if there is no successor in the left subtree
+        Node *successor = findInorderSuccessor(root->left, key);
+        if (!successor) {
+            successor = root;
+        }
+        return successor;
+    }
+}
+
+int main() {
+    Node *root = new Node(10);
+    root->left = new Node(5);
+    root->right = new Node(15);
+    root->right->left = new Node(12);
+    root->right->right = new Node(20);
+
+    int key = 12;
+    Node *successor = findInorderSuccessor(root, key);
+    if (successor) {
+        cout << "Inorder successor of " << key << " is " << successor->val << endl;
+    } else {
+        cout << "Inorder successor of " << key << " does not exist" << endl;
+    }
+
+    return 0;
+}
