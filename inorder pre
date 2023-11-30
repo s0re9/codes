@@ -1,0 +1,59 @@
+#include <iostream>
+
+using namespace std;
+
+struct Node {
+    int val;
+    Node *left, *right;
+
+    Node(int val) {
+        this->val = val;
+        this->left = this->right = nullptr;
+    }
+};
+
+Node *findInorderPredecessor(Node *root, int key) {
+    if (!root) {
+        return nullptr;
+    }
+
+    if (root->val == key) {
+        // If the node has a left child, the inorder predecessor is the maximum node in the left subtree
+        if (root->left) {
+            Node *curr = root->left;
+            while (curr->right) {
+                curr = curr->right;
+            }
+            return curr;
+        }
+    } else if (root->val > key) {
+        // If the key is less than the current node, the inorder predecessor must lie in the left subtree
+        return findInorderPredecessor(root->left, key);
+    } else {
+        // If the key is greater than or equal to the current node, the inorder predecessor must lie in the right subtree
+        // or is the parent of the current node if there is no predecessor in the right subtree
+        Node *predecessor = findInorderPredecessor(root->right, key);
+        if (!predecessor) {
+            predecessor = root->left ? root->left : root;
+        }
+        return predecessor;
+    }
+}
+
+int main() {
+    Node *root = new Node(10);
+    root->left = new Node(5);
+    root->right = new Node(15);
+    root->right->left = new Node(12);
+    root->right->right = new Node(20);
+
+    int key = 12;
+    Node *predecessor = findInorderPredecessor(root, key);
+    if (predecessor) {
+        cout << "Inorder predecessor of " << key << " is " << predecessor->val << endl;
+    } else {
+        cout << "Inorder predecessor of " << key << " does not exist" << endl;
+    }
+
+    return 0;
+}
